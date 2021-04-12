@@ -1,0 +1,30 @@
+<project name="IIQuery" default="dist" basedir=".">
+    <description>
+      IIQuery
+    </description>
+
+    <condition property="isWindows">
+        <os family="windows" />
+    </condition>
+
+    <condition property="isUnix">
+        <os family="unix" />
+    </condition>
+
+    <target name="doWindows" if="isWindows">
+        <exec executable="./gradlew.bat">
+            <arg value="plugin_prepare" />
+            <arg value="plugin" />
+        </exec>
+    </target>
+
+    <target name="doUnix" if="isUnix">
+        <exec executable="./gradlew">
+            <arg value="plugin_prepare" />
+            <arg value="plugin" />
+        </exec>
+    </target>
+
+    <target name="dist" depends="doWindows, doUnix"></target>
+
+</project>

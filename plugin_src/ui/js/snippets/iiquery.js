@@ -1,0 +1,1 @@
+jQuery('.navbar-right').prepend('<li id="notificationMenuItem" role="presentation" class="notification-menu-item"><a href="' + SailPoint.CONTEXT_PATH + '/plugins/pluginPage.jsf?pn=IIQuery" class="notification-badge-single" id="notificationMenuItemLink" role="menuitem"><i role="presentation" class="fa fa-table fa-lg"></i></a></li>')

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+
+<sailpoint>
+
+  <SPRight name="IIQueryRunner" displayName="Run HQL queries with IIQuery">
+    <Description>Allows a user to run HQL queries via the Query Browser</Description>
+  </SPRight>
+
+  <Capability name="IIQueryRunner" displayName="IIQueryRunner">
+    <Description>Allows a user to run HQL queries via the Query Browser</Description>
+    <RightRefs>
+      <Reference class="sailpoint.object.SPRight" name="IIQueryRunner"/>
+    </RightRefs>
+  </Capability>
+
+</sailpoint>

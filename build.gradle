@@ -1,0 +1,60 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main.java.srcDirs = ['plugin_src/src/java']
+}
+
+jar {
+    archiveBaseName = 'IIQuery'
+    archiveVersion =  '0.9.8'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    implementation fileTree('./identityiq_unzipped/war/WEB-INF/lib/') {
+        include '*.jar'
+    }
+}
+
+task unzip_identityiq (type: Copy) {
+    from zipTree("./base/ga/identityiq-8.1.zip")
+    into "./identityiq_unzipped"
+}
+
+task unzip_identityiq_war (type: Copy) {
+    dependsOn tasks.unzip_identityiq
+    from zipTree("./identityiq_unzipped/identityiq.war")
+    into "./identityiq_unzipped/war"
+}
+
+build.dependsOn unzip_identityiq_war
+
+task plugin_prepare (type: Copy) {
+    dependsOn tasks.unzip_identityiq_war
+    from 'plugin_src'
+    into "$buildDir/toArchive"
+}
+
+task plugin_prepare_second (type: Copy) {
+    dependsOn tasks.plugin_prepare
+    from jar
+    into "$buildDir/toArchive/lib"
+}
+
+task plugin(type: Zip) {
+
+    dependsOn tasks.plugin_prepare_second
+
+    archiveFileName = "plugin.zip"
+    destinationDirectory = file("$buildDir/dist")
+
+    from "$buildDir/toArchive"
+}
