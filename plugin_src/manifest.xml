@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE Plugin PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Plugin certificationLevel="None" displayName="IIQuery" minSystemVersion="8.1" name="IIQuery" version="3.1">
+<Plugin certificationLevel="None" displayName="IIQuery" minSystemVersion="8.1" name="IIQuery" version="3.2">
   <Attributes>
     <Map>
       <entry key="minUpgradableVersion" value="2.0" />
