@@ -5,4 +5,4 @@ build
 plugin_src/.settings
 .settings
 .vscode
-identityiq_unzipped
+dist

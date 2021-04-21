@@ -3,28 +3,52 @@
       IIQuery
     </description>
 
-    <condition property="isWindows">
-        <os family="windows" />
-    </condition>
+    <property name="src" location="plugin_src/src" />
+    <property name="build" location="build" />
+    <property name="dist" location="dist" />
 
-    <condition property="isUnix">
-        <os family="unix" />
-    </condition>
+    <property name="jar" value="IIQuery-0.9.9" />
 
-    <target name="doWindows" if="isWindows">
-        <exec executable="./gradlew.bat">
-            <arg value="plugin_prepare" />
-            <arg value="plugin" />
-        </exec>
+    <target name="clean">
+        <delete dir="${build}" />
+        <delete dir="${dist}" />
     </target>
 
-    <target name="doUnix" if="isUnix">
-        <exec executable="./gradlew">
-            <arg value="plugin_prepare" />
-            <arg value="plugin" />
-        </exec>
+    <target name="unzip">
+        <mkdir dir="${build}/identityiq_unzipped" />
+        <unzip src="./base/ga/identityiq-8.1.zip" dest="${build}/identityiq_unzipped" />
+        <unzip src="${build}/identityiq_unzipped/identityiq.war" dest="${build}/identityiq_unzipped/war" />
     </target>
 
-    <target name="dist" depends="doWindows, doUnix"></target>
+    <target name="compile" depends="unzip">
+
+        <mkdir dir="${build}/classes" />
+
+        <javac includeantruntime="false" srcdir="${src}" destdir="${build}/classes" debug="on" source="1.8">
+            <classpath>
+                <fileset dir="${build}/identityiq_unzipped/war/WEB-INF/lib" includes="*.jar" />
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${dist}" />
+        <jar destfile="${dist}/${jar}" basedir="${build}/classes" />
+
+    </target>
+
+    <target name="create-zip" depends="jar">
+
+        <copy todir="${dist}/plugin">
+            <fileset dir="plugin_src" />
+        </copy>
+
+        <copy file="${dist}/${jar}" todir="${dist}/plugin/lib" />
+
+        <zip destfile="${dist}/iiquery-plugin.zip" basedir="${dist}/plugin" />
+
+    </target>
+
+    <target name="dist" depends="create-zip"></target>
 
 </project>
