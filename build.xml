@@ -7,7 +7,7 @@
     <property name="build" location="build" />
     <property name="dist" location="dist" />
 
-    <property name="jar" value="IIQuery-0.9.9" />
+    <property name="jar" value="IIQuery-0.9.9.jar" />
 
     <target name="clean">
         <delete dir="${build}" />
