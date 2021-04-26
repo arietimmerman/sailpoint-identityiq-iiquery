@@ -1,40 +1,48 @@
-<project name="IIQuery" default="dist" basedir=".">
+<project name="IIQuery" default="package" basedir=".">
     <description>
       IIQuery
     </description>
 
     <property name="src" location="plugin_src/src" />
-    <property name="build" location="build" />
+    <property name="buildPlugins" location="build" />
     <property name="dist" location="dist" />
 
-    <property name="jar" value="IIQuery-0.9.9.jar" />
+    <property file="user.build.properties" />
+    <property file="build.properties" />
+
+    <property name="jar" value="${pluginName}-${version}.jar" />
 
     <target name="clean">
-        <delete dir="${build}" />
+        <echo message="Starting clean target" />
+
+        <delete dir="${buildPlugins}" />
         <delete dir="${dist}" />
     </target>
 
-    <target name="unzip">
-        <mkdir dir="${build}/identityiq_unzipped" />
-        <unzip src="./base/ga/identityiq-8.1.zip" dest="${build}/identityiq_unzipped" />
-        <unzip src="${build}/identityiq_unzipped/identityiq.war" dest="${build}/identityiq_unzipped/war" />
+    <target name="unzip" if="iiq.zip">
+        <mkdir dir="${buildPlugins}/identityiq_unzipped" />
+        <unzip src="./base/ga/identityiq-8.1.zip" dest="${buildPlugins}/identityiq_unzipped" />
+        <unzip src="${buildPlugins}/identityiq_unzipped/identityiq.war" dest="${buildPlugins}/identityiq_unzipped/war" />
+        <property name="iiq.home.final" value="${buildPlugins}/identityiq_unzipped/war"/>
     </target>
 
     <target name="compile" depends="unzip">
 
-        <mkdir dir="${build}/classes" />
+        <property name="iiq.home.final" value="${iiq.home}"/>
 
-        <javac includeantruntime="false" srcdir="${src}" destdir="${build}/classes" debug="on" source="1.8">
+        <mkdir dir="${buildPlugins}/classes" />
+
+        <javac includeantruntime="false" srcdir="${src}" destdir="${buildPlugins}/classes" debug="on" source="1.8">
             <classpath>
-                <fileset dir="${build}/identityiq_unzipped/war/WEB-INF/lib" includes="*.jar" />
+                <pathelement path="${iiq.home.final}/WEB-INF/classes" />
+                <fileset dir="${iiq.home.final}/WEB-INF/lib" includes="*.jar" />
             </classpath>
         </javac>
     </target>
 
     <target name="jar" depends="compile">
         <mkdir dir="${dist}" />
-        <jar destfile="${dist}/${jar}" basedir="${build}/classes" />
-
+        <jar destfile="${dist}/${jar}" basedir="${buildPlugins}/classes" />
     </target>
 
     <target name="create-zip" depends="jar">
@@ -45,10 +53,10 @@
 
         <copy file="${dist}/${jar}" todir="${dist}/plugin/lib" />
 
-        <zip destfile="${dist}/iiquery-plugin.zip" basedir="${dist}/plugin" />
+        <zip encoding="UTF-8" destfile="${dist}/iiquery-plugin.zip" basedir="${dist}/plugin" />
 
     </target>
 
-    <target name="dist" depends="create-zip"></target>
+    <target name="package" depends="create-zip"></target>
 
 </project>
