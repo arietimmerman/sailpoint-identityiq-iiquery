@@ -1,62 +1,59 @@
-<project name="IIQuery" default="package" basedir=".">
-    <description>
-      IIQuery
-    </description>
-
-    <property name="src" location="plugin_src/src" />
-    <property name="buildPlugins" location="build" />
-    <property name="dist" location="dist" />
-
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="IIQuery" default="package">
+    <!-- allow overriding of build properties -->
     <property file="user.build.properties" />
     <property file="build.properties" />
-
-    <property name="jar" value="${pluginName}-${version}.jar" />
+    <property name="buildPlugins" location="build" />
 
     <target name="clean">
         <echo message="Starting clean target" />
-
         <delete dir="${buildPlugins}" />
-        <delete dir="${dist}" />
     </target>
 
-    <target name="unzip" if="iiq.zip">
-        <mkdir dir="${buildPlugins}/identityiq_unzipped" />
-        <unzip src="./base/ga/identityiq-8.1.zip" dest="${buildPlugins}/identityiq_unzipped" />
-        <unzip src="${buildPlugins}/identityiq_unzipped/identityiq.war" dest="${buildPlugins}/identityiq_unzipped/war" />
-        <property name="iiq.home.final" value="${buildPlugins}/identityiq_unzipped/war"/>
-    </target>
+    <target name="package">
+        <property name="pluginBase" location="./plugin_src" />
+        <property name="pluginSrc" location="${pluginBase}/src" />
+        <property name="pluginBuild" location="${buildPlugins}/${pluginName}" />
+        <property name="pluginLib" location="${pluginBuild}/lib" />
+        <property name="pluginClasses" location="${pluginBuild}/classes" />
+        <property name="pluginContents" location="${pluginBuild}/contents" />
 
-    <target name="compile" depends="unzip">
+        <mkdir dir="${pluginClasses}" />
 
-        <property name="iiq.home.final" value="${iiq.home}"/>
-
-        <mkdir dir="${buildPlugins}/classes" />
-
-        <javac includeantruntime="false" srcdir="${src}" destdir="${buildPlugins}/classes" debug="on" source="1.8">
+        <javac srcdir="${pluginSrc}" destdir="${pluginClasses}" includeantruntime="false" target="1.7">
             <classpath>
-                <pathelement path="${iiq.home.final}/WEB-INF/classes" />
-                <fileset dir="${iiq.home.final}/WEB-INF/lib" includes="*.jar" />
+                <pathelement path="${iiq.home}/WEB-INF/classes" />
+                <fileset dir="${iiq.home}/WEB-INF/lib">
+                    <include name="**/*.jar" />
+                </fileset>
             </classpath>
+            <compilerarg value="-Xlint:deprecation" />
+            <compilerarg value="-Xlint:unchecked" />
         </javac>
-    </target>
 
-    <target name="jar" depends="compile">
-        <mkdir dir="${dist}" />
-        <jar destfile="${dist}/${jar}" basedir="${buildPlugins}/classes" />
-    </target>
+        <mkdir dir="${pluginLib}" />
 
-    <target name="create-zip" depends="jar">
+        <jar destfile="${pluginLib}/${pluginName}.jar">
+            <fileset dir="${pluginClasses}">
+                <include name="**/*" />
+            </fileset>
+        </jar>
 
-        <copy todir="${dist}/plugin">
-            <fileset dir="plugin_src" />
+        <mkdir dir="${pluginContents}" />
+
+        <copy todir="${pluginContents}">
+            <fileset dir="${pluginBase}">
+                <include name="manifest.xml" />
+                <include name="db/**" />
+                <include name="import/**" />
+                <include name="lib/*.jar" />
+                <include name="ui/**" />
+            </fileset>
+            <fileset dir="${pluginBuild}">
+                <include name="lib/*.jar" />
+            </fileset>
         </copy>
 
-        <copy file="${dist}/${jar}" todir="${dist}/plugin/lib" />
-
-        <zip encoding="UTF-8" destfile="${dist}/iiquery-plugin.zip" basedir="${dist}/plugin" />
-
+        <zip encoding="UTF-8" baseDir="${pluginContents}" destfile="${pluginBuild}/dist/${pluginName}.${version}.zip"></zip>
     </target>
-
-    <target name="package" depends="create-zip"></target>
-
 </project>
