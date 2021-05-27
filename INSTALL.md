@@ -1,4 +1,4 @@
-# IIQuery for SailPoint IdentityIQ
+# IIQuery
 
 Run [HQL](https://docs.jboss.org/hibernate/orm/3.3/reference/en/html/queryhql.html) queries directly from the SailPoint IdentityIQ web interface.
 
@@ -15,18 +15,6 @@ http://YOUR-IDENTITYIQ-HOST/identityiq/plugins/pluginPage.jsf?pn=IIQuery
 Make sure you have been assigned the new `IIQueryRunner` capability (or `SystemAdministrator`).
 
 Now type in a HQL query and press _Search_.
-
-## Build
-
-Make sure you have Java and Node with yarn installed.
-
-Also, [download](https://community.sailpoint.com/t5/IdentityIQ-Server-Software/ct-p/IdentityIQ) SailPoint IdentityIQ and store it in `base/ga/identityiq-8.1.zip`.
-
-~~~
-make build
-~~~
-
-The plugin will be stored in `build/dist/plugin.zip`.
 
 ## Features
 
